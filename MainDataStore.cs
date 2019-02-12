@@ -22,7 +22,7 @@ namespace AdvancedJunctionRule
 
         //20*16384 + 2*36864
         public static bool[] canLeftWaiting = new bool[36864];         //1
-        public static bool[] canRightTurn = new bool[36864];           //1
+        public static bool[] reserved1 = new bool[36864];           //1
         public static bool[] canUTurn = new bool[36864];           //1
 
 
@@ -51,7 +51,7 @@ namespace AdvancedJunctionRule
 
             for (int i = 0; i < MainDataStore.canLeftWaiting.Length; i++)
             {
-                canRightTurn[i] = false;
+                reserved1[i] = false;
                 canLeftWaiting[i] = false;
                 canUTurn[i] = false;
             }
@@ -73,7 +73,7 @@ namespace AdvancedJunctionRule
             SaveAndRestore.save_bools(ref i, crossStopLine, ref saveData);
 
             SaveAndRestore.save_bools(ref i, canLeftWaiting, ref saveData);
-            SaveAndRestore.save_bools(ref i, canRightTurn, ref saveData);
+            SaveAndRestore.save_bools(ref i, reserved1, ref saveData);
             SaveAndRestore.save_bools(ref i, canUTurn, ref saveData);
         }
 
@@ -96,7 +96,7 @@ namespace AdvancedJunctionRule
             isLeftWaiting = SaveAndRestore.load_bools(ref i, saveData, isLeftWaiting.Length);
             crossStopLine = SaveAndRestore.load_bools(ref i, saveData, crossStopLine.Length);
             canLeftWaiting = SaveAndRestore.load_bools(ref i, saveData, canLeftWaiting.Length);
-            canRightTurn = SaveAndRestore.load_bools(ref i, saveData, canRightTurn.Length);
+            reserved1 = SaveAndRestore.load_bools(ref i, saveData, reserved1.Length);
             canUTurn = SaveAndRestore.load_bools(ref i, saveData, canUTurn.Length);
 
         }

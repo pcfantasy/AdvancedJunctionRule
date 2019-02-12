@@ -21,14 +21,6 @@ namespace AdvancedJunctionRule
                 RoadBaseAI.GetTrafficLightState(nodeId, ref segmentData, frame, out vehicleLightState, out pedestrianLightState);
                 SegmentGeometry segmentGeometry = SegmentGeometry.Get(fromSegmentId, false);
                 bool startNode = segmentGeometry.StartNodeId() == nodeId;
-                if (MainDataStore.canRightTurn[fromSegmentId])
-                {
-                    if (segmentGeometry.IsRightSegment(toSegmentId, startNode))
-                    {
-                        //DebugLog.LogToFileOnly("right turn always green");
-                        vehicleLightState = RoadBaseAI.TrafficLightState.Green;
-                    }
-                }
                 if (MainDataStore.canUTurn[fromSegmentId])
                 {
                     if (fromSegmentId == toSegmentId)
@@ -59,14 +51,6 @@ namespace AdvancedJunctionRule
                 RoadBaseAI.GetTrafficLightState(nodeId, ref segmentData, frame, out vehicleLightState, out pedestrianLightState, out vehicles, out pedestrians);
                 SegmentGeometry segmentGeometry = SegmentGeometry.Get(fromSegmentId, false);
                 bool startNode = segmentGeometry.StartNodeId() == nodeId;
-                if (MainDataStore.canRightTurn[fromSegmentId])
-                {
-                    if (segmentGeometry.IsRightSegment(toSegmentId, startNode))
-                    {
-                        //DebugLog.LogToFileOnly("right turn always green1");
-                        vehicleLightState = RoadBaseAI.TrafficLightState.Green;
-                    }
-                }
 
                 if (MainDataStore.canUTurn[fromSegmentId])
                 {

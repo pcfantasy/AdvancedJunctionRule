@@ -47,8 +47,8 @@ namespace AdvancedJunctionRule
                 if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
                 {
                     DebugLog.LogToFileOnly("OnLevelLoaded");
+                    Language.LanguageSwitch(0);
                     SetupRoadGui();
-                    AdvancedJunctionRule.LoadSetting();
                     if (mode == LoadMode.NewGame)
                     {
                         DebugLog.LogToFileOnly("New Game");
@@ -72,8 +72,6 @@ namespace AdvancedJunctionRule
             {
                 RevertDetour();
             }
-
-            AdvancedJunctionRule.SaveSetting();
         }
 
         public override void OnReleased()

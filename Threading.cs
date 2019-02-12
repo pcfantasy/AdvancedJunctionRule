@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using ColossalFramework.Globalization;
 using ICities;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,6 @@ namespace AdvancedJunctionRule
 
             if (isFirstTiming && AdvancedJunctionRule.IsEnabled && Loader.isLoaded)
             {
-
                 //protected bool MayChangeSegment(ushort frontVehicleId, ref VehicleState vehicleState, ref Vehicle vehicleData, float sqrVelocity, ref PathUnit.Position prevPos, ref NetSegment prevSegment, ushort prevTargetNodeId, uint prevLaneID, ref PathUnit.Position position, ushort targetNodeId, ref NetNode targetNode, uint laneID, ref PathUnit.Position nextPosition, ushort nextTargetNodeId, out float maxSpeed)
                 var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
                 typeof(VehicleState).MakeByRefType(),
@@ -97,7 +97,7 @@ namespace AdvancedJunctionRule
 
 
                 //private bool CheckSegmentsTurningAngle(ushort sourceSegmentId, ref NetSegment sourceSegment, bool sourceStartNode, ushort targetSegmentId, ref NetSegment targetSegment, bool targetStartNode)
-                var srcMethod5 = typeof(LaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort),typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
+                var srcMethod5 = typeof(LaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
                 var destMethod5 = typeof(NewLaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
                 state5 = RedirectionHelper.RedirectCalls(srcMethod5, destMethod5);
                 isDetoured = true;
@@ -107,43 +107,62 @@ namespace AdvancedJunctionRule
             base.OnBeforeSimulationFrame();
 
 
-            int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFF);
-            int num27 = num26 * 144;
-            int num28 = (num26 + 1) * 144 - 1;
-
-            if (num26 == 255)
+            if (AdvancedJunctionRule.IsEnabled)
             {
-                RoadUI.refeshOnce = true;
-            }
+                int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFF);
+                int num27 = num26 * 144;
+                int num28 = (num26 + 1) * 144 - 1;
 
-            for (int num30 = num27; num30 <= num28; num30++)
-            {
-                if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.Created) && Singleton<NetManager>.instance.m_segments.m_buffer[num30].Info.m_vehicleTypes.IsFlagSet(VehicleInfo.VehicleType.Car))
+                if (num26 == 255)
                 {
-                    var instance = Singleton<NetManager>.instance;
-                    var startNode = instance.m_segments.m_buffer[num30].m_startNode;
-                    var endNode = instance.m_segments.m_buffer[num30].m_endNode;
-                    if (instance.m_nodes.m_buffer[startNode].m_flags.IsFlagSet(NetNode.Flags.Junction) || instance.m_nodes.m_buffer[endNode].m_flags.IsFlagSet(NetNode.Flags.Junction) || (Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.x) > 8000 || Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.z) > 8000))
+                    RoadUI.refeshOnce = true;
+                }
+
+
+                if (SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MainDataStore.lastLanguage == 1))
+                {
+                    //MainDataStore.lastLanguage = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
+                }
+                else if (!SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MainDataStore.lastLanguage != 1))
+                {
+                    //MainDataStore.lastLanguage = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
+                }
+                else
+                {
+                    MainDataStore.lastLanguage = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
+                    Language.LanguageSwitch(MainDataStore.lastLanguage);
+                    RoadUI.refeshOnce = true;
+                }
+
+                for (int num30 = num27; num30 <= num28; num30++)
+                {
+                    if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.Created) && Singleton<NetManager>.instance.m_segments.m_buffer[num30].Info.m_vehicleTypes.IsFlagSet(VehicleInfo.VehicleType.Car))
                     {
-                        if (!Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.NameVisible2))
+                        var instance = Singleton<NetManager>.instance;
+                        var startNode = instance.m_segments.m_buffer[num30].m_startNode;
+                        var endNode = instance.m_segments.m_buffer[num30].m_endNode;
+                        if (instance.m_nodes.m_buffer[startNode].m_flags.IsFlagSet(NetNode.Flags.Junction) || instance.m_nodes.m_buffer[endNode].m_flags.IsFlagSet(NetNode.Flags.Junction) || (Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.x) > 8000 || Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.z) > 8000))
                         {
-                            Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags |= NetSegment.Flags.NameVisible2;
-                            Singleton<NetManager>.instance.UpdateSegmentRenderer((ushort)num30, false);
-                        }
-                    }
-                    /*else
-                    {
-                        if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.NameVisible2))
-                        {
-                            if (Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.x) <= 8000 && Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.z) <= 8000)
+                            if (!Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.NameVisible2))
                             {
-                                Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags &= (~NetSegment.Flags.NameVisible2);
+                                Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags |= NetSegment.Flags.NameVisible2;
                                 Singleton<NetManager>.instance.UpdateSegmentRenderer((ushort)num30, false);
                             }
                         }
-                    }*/
-                }
+                        /*else
+                        {
+                            if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.NameVisible2))
+                            {
+                                if (Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.x) <= 8000 && Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.z) <= 8000)
+                                {
+                                    Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags &= (~NetSegment.Flags.NameVisible2);
+                                    Singleton<NetManager>.instance.UpdateSegmentRenderer((ushort)num30, false);
+                                }
+                            }
+                        }*/
+                    }
 
+                }
             }
         }
 

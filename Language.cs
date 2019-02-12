@@ -73,12 +73,6 @@ namespace AdvancedJunctionRule
                 currentLanguage = 0;
             }
 
-            if (Loader.isGuiRunning)
-            {
-                RoadUI.CanLeftWaiting.text = Language.Strings[1];
-                RoadUI.CanRightTurn.text = Language.Strings[0];
-                RoadUI.CanUTurn.text = Language.Strings[9];
-            }
             MainDataStore.lastLanguage = currentLanguage;
         }
     }

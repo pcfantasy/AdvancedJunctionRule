@@ -23,14 +23,11 @@ namespace AdvancedJunctionRule
 
         public static ushort lastSegment = 0;
 
-        public static UICheckBox CanRightTurn;
         public static UICheckBox CanLeftWaiting;
         public static UICheckBox CanUTurn;
 
-        private UILabel CanRightTurnText;
         private UILabel CanLeftWaitingText;
         private UILabel CanUTurnText;
-        private UILabel Tips1;
         private UILabel Tips2;
         private UILabel Tips3;
 
@@ -68,38 +65,8 @@ namespace AdvancedJunctionRule
 
         private void ShowOnGui()
         {
-            CanRightTurn = base.AddUIComponent<UICheckBox>();
-            CanRightTurn.relativePosition = new Vector3(SPACING, 50f);
-            this.CanRightTurnText = base.AddUIComponent<UILabel>();
-            this.CanRightTurnText.relativePosition = new Vector3(CanRightTurn.relativePosition.x + CanRightTurn.width + 20f, CanRightTurn.relativePosition.y + 5f);
-            CanRightTurn.height = 16f;
-            CanRightTurn.width = 16f;
-            CanRightTurn.label = this.CanRightTurnText;
-            CanRightTurn.text = Language.Strings[0];
-            UISprite uISprite0 = CanRightTurn.AddUIComponent<UISprite>();
-            uISprite0.height = 20f;
-            uISprite0.width = 20f;
-            uISprite0.relativePosition = new Vector3(0f, 0f);
-            uISprite0.spriteName = "check-unchecked";
-            uISprite0.isVisible = true;
-            UISprite uISprite1 = CanRightTurn.AddUIComponent<UISprite>();
-            uISprite1.height = 20f;
-            uISprite1.width = 20f;
-            uISprite1.relativePosition = new Vector3(0f, 0f);
-            uISprite1.spriteName = "check-checked";
-            CanRightTurn.checkedBoxObject = uISprite1;
-            CanRightTurn.isChecked = (MainDataStore.canRightTurn[lastSegment]) ? true : false;
-            CanRightTurn.isEnabled = true;
-            CanRightTurn.isVisible = true;
-            CanRightTurn.canFocus = true;
-            CanRightTurn.isInteractive = true;
-            CanRightTurn.eventCheckChanged += delegate (UIComponent component, bool eventParam)
-            {
-                CanRightTurn_OnCheckChanged(component, eventParam);
-            };
-
             CanLeftWaiting = base.AddUIComponent<UICheckBox>();
-            CanLeftWaiting.relativePosition = new Vector3(15f, CanRightTurn.relativePosition.y + 23f);
+            CanLeftWaiting.relativePosition = new Vector3(SPACING, 50f);
             this.CanLeftWaitingText = base.AddUIComponent<UILabel>();
             this.CanLeftWaitingText.relativePosition = new Vector3(CanLeftWaiting.relativePosition.x + CanLeftWaiting.width + 20f, CanLeftWaiting.relativePosition.y + 5f);
             CanLeftWaiting.height = 16f;
@@ -158,14 +125,9 @@ namespace AdvancedJunctionRule
                 CSUR_OnCheckChanged(component, eventParam);
             };
 
-            this.Tips1 = base.AddUIComponent<UILabel>();
-            this.Tips1.text = Language.Strings[2];
-            this.Tips1.relativePosition = new Vector3(15f, CanUTurn.relativePosition.y + 23f);
-            this.Tips1.autoSize = true;
-
             this.Tips2 = base.AddUIComponent<UILabel>();
             this.Tips2.text = Language.Strings[3];
-            this.Tips2.relativePosition = new Vector3(15f, Tips1.relativePosition.y + 23f);
+            this.Tips2.relativePosition = new Vector3(15f, CanUTurn.relativePosition.y + 23f);
             this.Tips2.autoSize = true;
 
             this.Tips3 = base.AddUIComponent<UILabel>();
@@ -173,27 +135,6 @@ namespace AdvancedJunctionRule
             this.Tips3.relativePosition = new Vector3(15f, Tips2.relativePosition.y + 23f);
             this.Tips3.autoSize = true;
 
-        }
-
-
-        public static void CanRightTurn_OnCheckChanged(UIComponent UIComp, bool bValue)
-        {
-            if (WorldInfoPanel.GetCurrentInstanceID().Type == InstanceType.NetSegment)
-            {
-                lastSegment = WorldInfoPanel.GetCurrentInstanceID().NetSegment;
-
-                if (bValue)
-                {
-                    MainDataStore.canRightTurn[lastSegment] = true;
-                    CanRightTurn.isChecked = true;
-                }
-                else
-                {
-                    MainDataStore.canRightTurn[lastSegment] = false;
-                    CanRightTurn.isChecked = false;
-                }
-                refeshOnce = true;
-            }
         }
 
 
@@ -260,24 +201,6 @@ namespace AdvancedJunctionRule
                         MainDataStore.canLeftWaiting[lastSegment] = false;
                     }
 
-                    if (!Options.timedLightsEnabled || (!TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)startNode].IsSimulationRunning() && !TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)endNode].IsSimulationRunning()))
-                    {
-                        if (instance.m_nodes.m_buffer[startNode].m_flags.IsFlagSet(NetNode.Flags.TrafficLights) || instance.m_nodes.m_buffer[endNode].m_flags.IsFlagSet(NetNode.Flags.TrafficLights))
-                        {
-                            Tips1.text = Language.Strings[2];
-                        }
-                        else
-                        {
-                            Tips1.text = Language.Strings[2] + Language.Strings[5];
-                            MainDataStore.canRightTurn[lastSegment] = false;
-                        }
-                    }
-                    else
-                    {
-                        Tips1.text = Language.Strings[2] + Language.Strings[4];
-                        MainDataStore.canRightTurn[lastSegment] = false;
-                    }
-
 
                     if (instance.m_nodes.m_buffer[startNode].m_flags.IsFlagSet(NetNode.Flags.TrafficLights) || instance.m_nodes.m_buffer[endNode].m_flags.IsFlagSet(NetNode.Flags.TrafficLights))
                     {
@@ -293,8 +216,9 @@ namespace AdvancedJunctionRule
                     //Tips2.text += MainDataStore.canLeftWaiting[lastSegment].ToString();
 
                     CanLeftWaiting.isChecked = (MainDataStore.canLeftWaiting[lastSegment]) ? true : false;
-                    CanRightTurn.isChecked = (MainDataStore.canRightTurn[lastSegment]) ? true : false;
                     CanUTurn.isChecked = (MainDataStore.canUTurn[lastSegment]) ? true : false;
+                    RoadUI.CanLeftWaiting.text = Language.Strings[1];
+                    RoadUI.CanUTurn.text = Language.Strings[9];
                     refeshOnce = false;
                     this.BringToFront();
                 }

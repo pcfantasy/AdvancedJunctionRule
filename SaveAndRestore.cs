@@ -183,7 +183,6 @@ namespace AdvancedJunctionRule
                 MainDataStore.saveData = new byte[438272];
                 gatherSaveData();
                 SaveAndRestore._serializableData.SaveData("AdvancedJunctionRule MainDataStore", MainDataStore.saveData);
-                AdvancedJunctionRule.SaveSetting();
             }
         }
 
@@ -203,8 +202,6 @@ namespace AdvancedJunctionRule
             {
                 MainDataStore.load();
             }
-
-            AdvancedJunctionRule.LoadSetting();
         }
     }
 }
