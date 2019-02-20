@@ -11,6 +11,8 @@ using TrafficManager.Custom.AI;
 using TrafficManager.Manager.Impl;
 using TrafficManager.Traffic.Data;
 using TrafficManager.UI.SubTools;
+using ColossalFramework.PlatformServices;
+using System.Collections.Generic;
 
 namespace AdvancedJunctionRule
 {
@@ -49,6 +51,7 @@ namespace AdvancedJunctionRule
                     DebugLog.LogToFileOnly("OnLevelLoaded");
                     Language.LanguageSwitch(0);
                     SetupRoadGui();
+                    CheckTMPE();
                     if (mode == LoadMode.NewGame)
                     {
                         DebugLog.LogToFileOnly("New Game");
@@ -58,6 +61,19 @@ namespace AdvancedJunctionRule
             }
         }
 
+
+        public void CheckTMPE()
+        {
+            if (IsSteamWorkshopItemSubscribed(583429740))
+            {
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", "Found original version of TM:PE steamID:583429740, We only support New version of TM:PE steamID:1637663252", true);
+            }
+
+            if (!this.Check3rdPartyModLoaded("TrafficManager", true))
+            {
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", "Require New version of TM:PE steamID:1637663252", true);
+            }
+        }
 
         public override void OnLevelUnloading()
         {
@@ -173,6 +189,43 @@ namespace AdvancedJunctionRule
             }
         }
 
+        public static bool IsSteamWorkshopItemSubscribed(ulong itemId)
+        {
+            return ContentManagerPanel.subscribedItemsTable.Contains(new PublishedFileId(itemId));
+        }
+
+        private bool Check3rdPartyModLoaded(string namespaceStr, bool printAll = false)
+        {
+            bool thirdPartyModLoaded = false;
+
+            var loadingWrapperLoadingExtensionsField = typeof(LoadingWrapper).GetField("m_LoadingExtensions", BindingFlags.NonPublic | BindingFlags.Instance);
+            List<ILoadingExtension> loadingExtensions = (List<ILoadingExtension>)loadingWrapperLoadingExtensionsField.GetValue(Singleton<LoadingManager>.instance.m_LoadingWrapper);
+
+            if (loadingExtensions != null)
+            {
+                foreach (ILoadingExtension extension in loadingExtensions)
+                {
+                    if (printAll)
+                        DebugLog.LogToFileOnly($"Detected extension: {extension.GetType().Name} in namespace {extension.GetType().Namespace}");
+                    if (extension.GetType().Namespace == null)
+                        continue;
+
+                    var nsStr = extension.GetType().Namespace.ToString();
+                    if (namespaceStr.Equals(nsStr))
+                    {
+                        DebugLog.LogToFileOnly($"The mod '{namespaceStr}' has been detected.");
+                        thirdPartyModLoaded = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                DebugLog.LogToFileOnly("Could not get loading extensions");
+            }
+
+            return thirdPartyModLoaded;
+        }
 
     }
 }
