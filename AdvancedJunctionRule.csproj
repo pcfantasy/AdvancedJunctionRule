@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedJunctionRule.cs" />
-    <Compile Include="CustomRoadAI1.cs" />
+    <Compile Include="AdvancedJunctionRuleRoadAI.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="NewCarAI.cs" />
     <Compile Include="NewLaneConnectorTool.cs" />

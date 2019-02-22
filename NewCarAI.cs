@@ -40,7 +40,7 @@ namespace AdvancedJunctionRule
                     ICustomSegmentLight customSegmentLight = (segmentLights == null) ? null : segmentLights.GetCustomLight(fromLaneIndex);
                     if (MainDataStore.canLeftWaiting[fromSegmentId])
                     {
-                        if (segmentGeometry.IsLeftSegment(toSegmentId, startNode) || (toSegmentId == fromSegmentId))
+                        if (segmentGeometry.IsLeftSegment(toSegmentId, startNode))
                         {
                             if (customSegmentLight.LightLeft == RoadBaseAI.TrafficLightState.Red && customSegmentLight.LightMain == RoadBaseAI.TrafficLightState.Green)
                             {

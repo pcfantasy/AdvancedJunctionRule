@@ -12,7 +12,7 @@ using TrafficManager.TrafficLight.Data;
 
 namespace AdvancedJunctionRule
 {
-    public class CustomRoadAI1 : RoadBaseAI
+    public class AdvancedJunctionRuleRoadAI : RoadBaseAI
     {
         public static void GetTrafficLightState(ushort nodeId, ushort fromSegmentId, byte fromLaneIndex, ushort toSegmentId, ref NetSegment segmentData, uint frame, out RoadBaseAI.TrafficLightState vehicleLightState, out RoadBaseAI.TrafficLightState pedestrianLightState)
         {
@@ -25,7 +25,15 @@ namespace AdvancedJunctionRule
                 {
                     if (fromSegmentId == toSegmentId)
                     {
-                        vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                        if (vehicleLightState != RoadBaseAI.TrafficLightState.Green)
+                        {
+                            Random rand = new Random();
+                            //Add this to let U turn car low proiority
+                            if (rand.Next(2) == 0)
+                            {
+                                vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                            }
+                        }
                     }
                 }
                 return;
@@ -33,12 +41,20 @@ namespace AdvancedJunctionRule
 
 
 
-            CustomRoadAI1.GetCustomTrafficLightState(nodeId, fromSegmentId, fromLaneIndex, toSegmentId, out vehicleLightState, out pedestrianLightState, ref TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)nodeId]);
+            GetCustomTrafficLightState(nodeId, fromSegmentId, fromLaneIndex, toSegmentId, out vehicleLightState, out pedestrianLightState, ref TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)nodeId]);
             if (MainDataStore.canUTurn[fromSegmentId])
             {
                 if (fromSegmentId == toSegmentId)
                 {
-                    vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                    if (vehicleLightState != RoadBaseAI.TrafficLightState.Green)
+                    {
+                        Random rand = new Random();
+                        //Add this to let U turn car low proiority
+                        if (rand.Next(2) == 0)
+                        {
+                            vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                        }
+                    }
                 }
             }
         }
@@ -56,7 +72,15 @@ namespace AdvancedJunctionRule
                 {
                     if (fromSegmentId == toSegmentId)
                     {
-                        vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                        if (vehicleLightState != RoadBaseAI.TrafficLightState.Green)
+                        {
+                            Random rand = new Random();
+                            //Add this to let U turn car low proiority
+                            if (rand.Next(2) == 0)
+                            {
+                                vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                            }
+                        }
                     }
                 }
                 return;
@@ -64,14 +88,22 @@ namespace AdvancedJunctionRule
 
 
 
-            CustomRoadAI1.GetCustomTrafficLightState(nodeId, fromSegmentId, fromLaneIndex, toSegmentId, out vehicleLightState, out pedestrianLightState, ref TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)nodeId]);
+            GetCustomTrafficLightState(nodeId, fromSegmentId, fromLaneIndex, toSegmentId, out vehicleLightState, out pedestrianLightState, ref TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)nodeId]);
             vehicles = false;
             pedestrians = false;
             if (MainDataStore.canUTurn[fromSegmentId])
             {
                 if (fromSegmentId == toSegmentId)
                 {
-                    vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                    if (vehicleLightState != RoadBaseAI.TrafficLightState.Green)
+                    {
+                        Random rand = new Random();
+                        //Add this to let U turn car low proiority
+                        if (rand.Next(2) == 0)
+                        {
+                            vehicleLightState = RoadBaseAI.TrafficLightState.Green;
+                        }
+                    }
                 }
             }
         }
