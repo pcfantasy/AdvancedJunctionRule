@@ -903,14 +903,14 @@ namespace AdvancedJunctionRule
                         DebugLog.LogToFileOnly("startPos = " + startPos.ToString());
                         DebugLog.LogToFileOnly("endPos = " + endPos.ToString());
                         DebugLog.LogToFileOnly("+++++++++++++++++++++++++++++++++++");*/
-                        MainDataStore.crossStopLine[vehicleID] = true;
-                        if (MainDataStore.additionWaitingTime[vehicleID] > 0)
+                        if (!MainDataStore.crossStopLine[vehicleID])
                         {
                             NetManager instance1 = Singleton<NetManager>.instance;
                             Vector3 tmpPosition1 = instance.m_lanes.m_buffer[MainDataStore.laneID[vehicleID]].CalculatePosition((MainDataStore.offset[vehicleID]) * 0.003921569f);
                             Vector3 tmpPosition2 = instance.m_nodes.m_buffer[MainDataStore.nodeId[vehicleID]].m_position;
                             float distance = Vector3.Distance(tmpPosition1, tmpPosition2);
-                            MainDataStore.additionWaitingTime[vehicleID] = (byte)(distance / 5f);
+                            MainDataStore.additionWaitingTime[vehicleID] = (byte)(distance/4f);
+                            MainDataStore.crossStopLine[vehicleID] = true;
                         }
                         targetPos0.w = 0f;
                         targetPos0.Set(targetPos0.x, targetPos0.y, targetPos0.z, targetPos0.w);
@@ -1074,14 +1074,17 @@ namespace AdvancedJunctionRule
             float num7 = num5 * num5;
             int i = 0;
             bool flag = false;
+            // NON-STOCK CODE START
             NewCarAI.LeftTurnWaitingPre(vehicleID, ref vehicleData);
+            /// NON-STOCK CODE END
             if (!MainDataStore.crossStopLine[vehicleID] && (sqrMagnitude < num6 || vehicleData.m_targetPos3.w < 0.01f) && (leaderData.m_flags & (Vehicle.Flags.WaitingPath | Vehicle.Flags.Stopped)) == (Vehicle.Flags)0)
             {
                 if (leaderData.m_path != 0u)
                 {
-                    //NewCarAI.LeftTurnWaiting(vehicleID, ref vehicleData, true);
                     base.UpdatePathTargetPositions(vehicleID, ref vehicleData, frameData.m_position, ref i, 4, num6, num7);
+                    // NON-STOCK CODE START
                     NewCarAI.LeftTurnWaitingPost(vehicleID, ref vehicleData);
+                    /// NON-STOCK CODE END
 
                     if ((leaderData.m_flags & Vehicle.Flags.Spawned) == (Vehicle.Flags)0)
                     {
@@ -1286,9 +1289,10 @@ namespace AdvancedJunctionRule
                         num18 = Mathf.Max(0f, num18 - this.m_info.m_generatedInfo.m_size.z * 0.5f);
                     }
                     num12 = Mathf.Min(num12, CalculateMaxSpeed(num18, 0f, num2 * 0.9f));
-                    if (!DisableCollisionCheck(leaderID, ref leaderData))
+                    if (!DisableCollisionCheck(vehicleID, ref vehicleData))
                     {
                         CarAI.CheckOtherVehicles(vehicleID, ref vehicleData, ref frameData, ref num12, ref flag5, ref zero, num3, num2 * 0.9f, lodPhysics);
+                        // NON-STOCK CODE START
                         if (MainDataStore.crossStopLine[vehicleID])
                         {
                             flag5 = true;
@@ -1304,6 +1308,7 @@ namespace AdvancedJunctionRule
                                 num12 = 0;
                             }
                         }
+                        /// NON-STOCK CODE END
                     }
                     if (flag6)
                     {
@@ -1391,7 +1396,7 @@ namespace AdvancedJunctionRule
         }
 
         private static bool DisableCollisionCheck(ushort vehicleID, ref Vehicle vehicleData)
-        {
+        {          
             if ((vehicleData.m_flags & Vehicle.Flags.Arriving) != (Vehicle.Flags)0)
             {
                 float num = Mathf.Max(Mathf.Abs(vehicleData.m_targetPos3.x), Mathf.Abs(vehicleData.m_targetPos3.z));
@@ -1403,7 +1408,6 @@ namespace AdvancedJunctionRule
             }
             return false;
         }
-
 
         private static float CalculateMaxSpeed(float targetDistance, float targetSpeed, float maxBraking)
         {
