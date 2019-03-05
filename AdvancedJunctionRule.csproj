@@ -38,6 +38,9 @@
     <Reference Include="ColossalManaged">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
+    <Reference Include="CSUtil.CameraControl">
+      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\583429740\CSUtil.CameraControl.dll</HintPath>
+    </Reference>
     <Reference Include="ICities">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
@@ -50,13 +53,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TMPE.CitiesGameBridge">
-      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TMPE.CitiesGameBridge.dll</HintPath>
+      <HintPath>..\..\Cities-Skylines-Traffic-Manager-President-Edition2\TLM\TLM\bin\Release\TMPE.CitiesGameBridge.dll</HintPath>
     </Reference>
     <Reference Include="TMPE.GenericGameBridge">
-      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TMPE.GenericGameBridge.dll</HintPath>
+      <HintPath>..\..\Cities-Skylines-Traffic-Manager-President-Edition2\TLM\TLM\bin\Release\TMPE.GenericGameBridge.dll</HintPath>
     </Reference>
     <Reference Include="TrafficManager">
-      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TrafficManager.dll</HintPath>
+      <HintPath>..\..\Cities-Skylines-Traffic-Manager-President-Edition2\TLM\TLM\bin\Release\TrafficManager.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
@@ -77,12 +80,10 @@
     <Compile Include="SaveAndRestore.cs" />
     <Compile Include="Threading.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TMPE.CitiesGameBridge.dll" />
-    <Analyzer Include="F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TMPE.GenericGameBridge.dll" />
-    <Analyzer Include="F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TrafficManager.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\bin\Release\AdvancedJunctionRule.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\AdvancedJunctionRule.dll"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

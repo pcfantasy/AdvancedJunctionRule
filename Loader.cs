@@ -28,6 +28,8 @@ namespace AdvancedJunctionRule
 
         public static bool isGuiRunning = false;
         public static bool isLoaded = false;
+        public static bool is583429740 = false;
+        public static bool is1637663252 = false;
 
         public static RedirectCallsState state1;
         public static RedirectCallsState state2;
@@ -64,20 +66,28 @@ namespace AdvancedJunctionRule
 
         public void CheckTMPE()
         {
-            if (IsSteamWorkshopItemSubscribed(583429740))
+            if (IsSteamWorkshopItemSubscribed(583429740) && IsSteamWorkshopItemSubscribed(1637663252))
             {
-                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", "Found original version of TM:PE steamID:583429740, We only support New version of TM:PE steamID:1637663252", true);
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", "Can not sub two TM:PE, steamID:583429740 and 1637663252", true);
+            } else if (IsSteamWorkshopItemSubscribed(583429740))
+            {
+                is583429740 = true;
+            } else if (IsSteamWorkshopItemSubscribed(1637663252))
+            {
+                is1637663252 = true;
             }
 
             if (!this.Check3rdPartyModLoaded("TrafficManager", true))
             {
-                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", "Require New version of TM:PE steamID:1637663252", true);
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", "Require TM:PE steamID:583429740 or 1637663252", true);
             }
         }
 
         public override void OnLevelUnloading()
         {
             base.OnLevelUnloading();
+            is583429740 = false;
+            is1637663252 = false;
             if (AdvancedJunctionRule.IsEnabled & isGuiRunning)
             {
                 //remove RoadUI

@@ -36,7 +36,9 @@ namespace AdvancedJunctionRule
             if (isFirstTiming && AdvancedJunctionRule.IsEnabled && Loader.isLoaded)
             {
                 //protected bool MayChangeSegment(ushort frontVehicleId, ref VehicleState vehicleState, ref Vehicle vehicleData, float sqrVelocity, ref PathUnit.Position prevPos, ref NetSegment prevSegment, ushort prevTargetNodeId, uint prevLaneID, ref PathUnit.Position position, ushort targetNodeId, ref NetNode targetNode, uint laneID, ref PathUnit.Position nextPosition, ushort nextTargetNodeId, out float maxSpeed)
-                var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
+                if (Loader.is1637663252)
+                {
+                    var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
                 typeof(VehicleState).MakeByRefType(),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(float),
@@ -51,7 +53,7 @@ namespace AdvancedJunctionRule
                 typeof(PathUnit.Position).MakeByRefType(),
                 typeof(ushort),
                 typeof(float).MakeByRefType()}, null);
-                var destMethod1 = typeof(NewCarAI).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
+                    var destMethod1 = typeof(NewCarAI).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
                 typeof(VehicleState).MakeByRefType(),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(float),
@@ -66,7 +68,41 @@ namespace AdvancedJunctionRule
                 typeof(PathUnit.Position).MakeByRefType(),
                 typeof(ushort),
                 typeof(float).MakeByRefType() }, null);
-                state1 = RedirectionHelper.RedirectCalls(srcMethod1, destMethod1);
+                    state1 = RedirectionHelper.RedirectCalls(srcMethod1, destMethod1);
+                } else
+                {
+                    var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
+                typeof(VehicleState).MakeByRefType(),
+                typeof(Vehicle).MakeByRefType(),
+                typeof(float),
+                typeof(PathUnit.Position).MakeByRefType(),
+                typeof(NetSegment).MakeByRefType(),
+                typeof(ushort),
+                typeof(uint),
+                typeof(PathUnit.Position).MakeByRefType(),
+                typeof(ushort),
+                typeof(NetNode).MakeByRefType(),
+                typeof(uint),
+                typeof(PathUnit.Position).MakeByRefType(),
+                typeof(ushort),
+                typeof(float).MakeByRefType()}, null);
+                    var destMethod1 = typeof(NewCarAI).GetMethod("OldTMPEMayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
+                typeof(VehicleState).MakeByRefType(),
+                typeof(Vehicle).MakeByRefType(),
+                typeof(float),
+                typeof(PathUnit.Position).MakeByRefType(),
+                typeof(NetSegment).MakeByRefType(),
+                typeof(ushort),
+                typeof(uint),
+                typeof(PathUnit.Position).MakeByRefType(),
+                typeof(ushort),
+                typeof(NetNode).MakeByRefType(),
+                typeof(uint),
+                typeof(PathUnit.Position).MakeByRefType(),
+                typeof(ushort),
+                typeof(float).MakeByRefType() }, null);
+                    state1 = RedirectionHelper.RedirectCalls(srcMethod1, destMethod1);
+                }
 
 
                 //public void CustomSimulationStep(ushort vehicleID, ref Vehicle vehicleData, ref Vehicle.Frame frameData, ushort leaderID, ref Vehicle leaderData, int lodPhysics)
