@@ -154,14 +154,11 @@ namespace AdvancedJunctionRule
                     RoadUI.refeshOnce = true;
                 }
 
-
                 if (SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MainDataStore.lastLanguage == 1))
                 {
-                    //MainDataStore.lastLanguage = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
                 }
                 else if (!SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MainDataStore.lastLanguage != 1))
                 {
-                    //MainDataStore.lastLanguage = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
                 }
                 else
                 {
@@ -185,17 +182,6 @@ namespace AdvancedJunctionRule
                                 Singleton<NetManager>.instance.UpdateSegmentRenderer((ushort)num30, false);
                             }
                         }
-                        /*else
-                        {
-                            if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.NameVisible2))
-                            {
-                                if (Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.x) <= 8000 && Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.z) <= 8000)
-                                {
-                                    Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags &= (~NetSegment.Flags.NameVisible2);
-                                    Singleton<NetManager>.instance.UpdateSegmentRenderer((ushort)num30, false);
-                                }
-                            }
-                        }*/
                     }
 
                 }

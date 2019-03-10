@@ -17,7 +17,7 @@ namespace AdvancedJunctionRule
 
         public string Name
         {
-            get { return "AdvancedJunctionRule"; }
+            get { return "Advanced Junction Rule"; }
         }
 
         public string Description
