@@ -149,20 +149,7 @@ namespace AdvancedJunctionRule
                 {
                     RoadUI.refeshOnce = true;
                 }
-
-                if (SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MainDataStore.lastLanguage == 1))
-                {
-                }
-                else if (!SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MainDataStore.lastLanguage != 1))
-                {
-                }
-                else
-                {
-                    MainDataStore.lastLanguage = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
-                    Language.LanguageSwitch(MainDataStore.lastLanguage);
-                    RoadUI.refeshOnce = true;
-                }
-
+                //Show road name for UI
                 for (int num30 = num27; num30 <= num28; num30++)
                 {
                     if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.Created) && Singleton<NetManager>.instance.m_segments.m_buffer[num30].Info.m_vehicleTypes.IsFlagSet(VehicleInfo.VehicleType.Car))

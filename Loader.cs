@@ -56,7 +56,6 @@ namespace AdvancedJunctionRule
                 if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
                 {
                     DebugLog.LogToFileOnly("OnLevelLoaded");
-                    Language.LanguageSwitch(0);
                     SetupRoadGui();
                     Detour();
                     CheckTMPE();

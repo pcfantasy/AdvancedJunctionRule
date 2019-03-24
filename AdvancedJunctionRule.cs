@@ -31,13 +31,11 @@ namespace AdvancedJunctionRule
             IsEnabled = true;
             FileStream fs = File.Create("AdvancedJunctionRule.txt");
             fs.Close();
-            Language.LanguageSwitch((byte)language_idex);
         }
 
         public void OnDisabled()
         {
             IsEnabled = false;
-            Language.LanguageSwitch((byte)language_idex);
         }
     }
 }

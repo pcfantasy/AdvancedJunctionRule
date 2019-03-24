@@ -72,19 +72,26 @@
     <Compile Include="Loader.cs" />
     <Compile Include="CustomAI\NewCarAI.cs" />
     <Compile Include="CustomAI\NewLaneConnectorTool.cs" />
+    <Compile Include="Util\Localization.cs" />
     <Compile Include="Util\RedirectionHelper.cs" />
     <Compile Include="Util\DebugLog.cs" />
-    <Compile Include="Util\Language.cs" />
     <Compile Include="Util\MainDataStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoadUI.cs" />
     <Compile Include="SaveAndRestore.cs" />
     <Compile Include="AdvancedJunctionRuleThreading.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Locales\en.txt" />
+    <Content Include="Locales\zh.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\bin\Release\AdvancedJunctionRule.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\AdvancedJunctionRule.dll"
-copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\bin\Release\0Harmony.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\0Harmony.dll"</PostBuildEvent>
+copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\bin\Release\0Harmony.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\0Harmony.dll"
+rd /q /s "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"
+mkdir "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"
+copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\Locales\*.txt" "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

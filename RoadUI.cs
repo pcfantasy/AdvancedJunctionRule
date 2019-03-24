@@ -72,7 +72,7 @@ namespace AdvancedJunctionRule
             CanLeftWaiting.height = 16f;
             CanLeftWaiting.width = 16f;
             CanLeftWaiting.label = this.CanLeftWaitingText;
-            CanLeftWaiting.text = Language.Strings[1];
+            CanLeftWaiting.text = Localization.Get("CAN_LEFT_WAITING");
             UISprite uISprite2 = CanLeftWaiting.AddUIComponent<UISprite>();
             uISprite2.height = 20f;
             uISprite2.width = 20f;
@@ -102,7 +102,7 @@ namespace AdvancedJunctionRule
             CanUTurn.height = 16f;
             CanUTurn.width = 16f;
             CanUTurn.label = this.CanUTurnText;
-            CanUTurn.text = Language.Strings[9];
+            CanUTurn.text = Localization.Get("CAN_UTURN_ON_RED");
             UISprite uISprite4 = CanUTurn.AddUIComponent<UISprite>();
             uISprite4.height = 20f;
             uISprite4.width = 20f;
@@ -126,12 +126,12 @@ namespace AdvancedJunctionRule
             };
 
             this.Tips2 = base.AddUIComponent<UILabel>();
-            this.Tips2.text = Language.Strings[3];
+            this.Tips2.text = Localization.Get("LEFT_TIPS");
             this.Tips2.relativePosition = new Vector3(15f, CanUTurn.relativePosition.y + 23f);
             this.Tips2.autoSize = true;
 
             this.Tips3 = base.AddUIComponent<UILabel>();
-            this.Tips3.text = Language.Strings[10];
+            this.Tips3.text = Localization.Get("UTURN_TIPS");
             this.Tips3.relativePosition = new Vector3(15f, Tips2.relativePosition.y + 23f);
             this.Tips3.autoSize = true;
 
@@ -193,32 +193,29 @@ namespace AdvancedJunctionRule
                     var endNode = instance.m_segments.m_buffer[lastSegment].m_endNode;
                     if (Options.timedLightsEnabled && (TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)startNode].IsSimulationRunning() || TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)endNode].IsSimulationRunning()))
                     {
-                        Tips2.text = Language.Strings[3];
+                        Tips2.text = Localization.Get("LEFT_TIPS");
                     }
                     else
                     {
-                        Tips2.text = Language.Strings[3] + Language.Strings[6];
+                        Tips2.text = Localization.Get("LEFT_TIPS") + ": " + Localization.Get("NEED_TMPE");
                         MainDataStore.canLeftWaiting[lastSegment] = false;
                     }
 
 
                     if (instance.m_nodes.m_buffer[startNode].m_flags.IsFlagSet(NetNode.Flags.TrafficLights) || instance.m_nodes.m_buffer[endNode].m_flags.IsFlagSet(NetNode.Flags.TrafficLights))
                     {
-                        Tips3.text = Language.Strings[10];
+                        Tips3.text = Localization.Get("UTURN_TIPS");
                     }
                     else
                     {
-                        Tips3.text = Language.Strings[10] + Language.Strings[5];
+                        Tips3.text = Localization.Get("UTURN_TIPS") + ": " + Localization.Get("NO_TRAFFIC_LIGHTS");
                         MainDataStore.canUTurn[lastSegment] = false;
                     }
 
-                    //Tips1.text += MainDataStore.canRightTurn[lastSegment].ToString();
-                    //Tips2.text += MainDataStore.canLeftWaiting[lastSegment].ToString();
-
                     CanLeftWaiting.isChecked = (MainDataStore.canLeftWaiting[lastSegment]) ? true : false;
                     CanUTurn.isChecked = (MainDataStore.canUTurn[lastSegment]) ? true : false;
-                    RoadUI.CanLeftWaiting.text = Language.Strings[1];
-                    RoadUI.CanUTurn.text = Language.Strings[9];
+                    RoadUI.CanLeftWaiting.text = Localization.Get("CAN_LEFT_WAITING");
+                    RoadUI.CanUTurn.text = Localization.Get("CAN_UTURN_ON_RED");
                     refeshOnce = false;
                     this.BringToFront();
                 }
