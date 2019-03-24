@@ -1,4 +1,6 @@
-﻿using ColossalFramework;
+﻿using AdvancedJunctionRule.CustomAI;
+using AdvancedJunctionRule.Util;
+using ColossalFramework;
 using ColossalFramework.Globalization;
 using ICities;
 using System;
@@ -18,7 +20,7 @@ using UnityEngine;
 
 namespace AdvancedJunctionRule
 {
-    public class Threading : ThreadingExtensionBase
+    public class AdvancedJunctionRuleThreading : ThreadingExtensionBase
     {
         public static bool isFirstTiming = true;
         public static bool isDetoured = false;
@@ -38,7 +40,7 @@ namespace AdvancedJunctionRule
                 //protected bool MayChangeSegment(ushort frontVehicleId, ref VehicleState vehicleState, ref Vehicle vehicleData, float sqrVelocity, ref PathUnit.Position prevPos, ref NetSegment prevSegment, ushort prevTargetNodeId, uint prevLaneID, ref PathUnit.Position position, ushort targetNodeId, ref NetNode targetNode, uint laneID, ref PathUnit.Position nextPosition, ushort nextTargetNodeId, out float maxSpeed)
                 if (Loader.is1637663252)
                 {
-                    var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
+                var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
                 typeof(VehicleState).MakeByRefType(),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(float),
@@ -71,7 +73,7 @@ namespace AdvancedJunctionRule
                     state1 = RedirectionHelper.RedirectCalls(srcMethod1, destMethod1);
                 } else
                 {
-                    var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
+                var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
                 typeof(VehicleState).MakeByRefType(),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(float),
@@ -104,8 +106,6 @@ namespace AdvancedJunctionRule
                     state1 = RedirectionHelper.RedirectCalls(srcMethod1, destMethod1);
                 }
 
-
-                //public void CustomSimulationStep(ushort vehicleID, ref Vehicle vehicleData, ref Vehicle.Frame frameData, ushort leaderID, ref Vehicle leaderData, int lodPhysics)
                 var srcMethod2 = typeof(CarAI).GetMethod("SimulationStep", BindingFlags.Instance | BindingFlags.Public, null, new Type[] {
                 typeof(ushort),
                 typeof(Vehicle).MakeByRefType(),
@@ -121,7 +121,6 @@ namespace AdvancedJunctionRule
                 typeof(ushort),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(int)}, null);
-
                 state2 = RedirectionHelper.RedirectCalls(srcMethod2, destMethod2);
 
                 var srcMethod3 = typeof(CustomRoadAI).GetMethod("GetTrafficLightState", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, new Type[] { typeof(ushort), typeof(ushort), typeof(byte), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(uint), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType() }, null);
@@ -131,14 +130,11 @@ namespace AdvancedJunctionRule
                 var destMethod4 = typeof(AdvancedJunctionRuleRoadAI).GetMethod("GetTrafficLightState", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, new Type[] { typeof(ushort), typeof(ushort), typeof(byte), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(uint), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(RoadBaseAI.TrafficLightState).MakeByRefType() }, null);
                 state4 = RedirectionHelper.RedirectCalls(srcMethod4, destMethod4);
 
-
-                //private bool CheckSegmentsTurningAngle(ushort sourceSegmentId, ref NetSegment sourceSegment, bool sourceStartNode, ushort targetSegmentId, ref NetSegment targetSegment, bool targetStartNode)
                 var srcMethod5 = typeof(LaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
                 var destMethod5 = typeof(NewLaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
                 state5 = RedirectionHelper.RedirectCalls(srcMethod5, destMethod5);
                 isDetoured = true;
                 isFirstTiming = false;
-                //MainDataStore.DataInit();
             }
             base.OnBeforeSimulationFrame();
 
@@ -183,12 +179,8 @@ namespace AdvancedJunctionRule
                             }
                         }
                     }
-
                 }
             }
         }
-
-
-
     }
 }

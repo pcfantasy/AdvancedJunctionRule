@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using AdvancedJunctionRule.Util;
+using ColossalFramework;
 using ColossalFramework.UI;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,6 @@ namespace AdvancedJunctionRule
             this.ShowOnGui();
             base.Hide();
         }
-
 
         private void ShowOnGui()
         {

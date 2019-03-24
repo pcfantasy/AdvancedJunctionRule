@@ -26,7 +26,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace AdvancedJunctionRule
+namespace AdvancedJunctionRule.Util
 {
     /// <summary>
     /// Helper class to deal with detours. This version is for Unity 5 x64 on Windows.

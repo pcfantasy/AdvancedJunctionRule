@@ -17,8 +17,9 @@ using TrafficManager.Traffic.Data;
 using static TrafficManager.Traffic.Data.PrioritySegment;
 using ColossalFramework.Math;
 using TrafficManager.TrafficLight;
+using AdvancedJunctionRule.Util;
 
-namespace AdvancedJunctionRule
+namespace AdvancedJunctionRule.CustomAI
 {
     public class NewCarAI : VehicleAI
     {
@@ -1619,9 +1620,38 @@ namespace AdvancedJunctionRule
             frameData.m_transition = false;
         }
 
+        public void VehicleStatusForRealGasStation(ushort vehicleID, ref Vehicle vehicleData)
+        {
+            DebugLog.LogToFileOnly("Error: should be detoured by RealGasStation");
+        }
+
+        public void VehicleStatusForRealCity(ushort vehicleID, ref Vehicle vehicleData)
+        {
+            DebugLog.LogToFileOnly("Error: should be detoured by RealCity");
+        }
+
+        public void VehicleStatusForTrafficCongestionReport(ushort vehicleID, ref Vehicle vehicleData)
+        {
+            DebugLog.LogToFileOnly("Error: should be detoured by TrafficCongestionReport");
+        }
 
         public void CustomSimulationStep(ushort vehicleID, ref Vehicle vehicleData, ref Vehicle.Frame frameData, ushort leaderID, ref Vehicle leaderData, int lodPhysics)
         {
+            if (Loader.isRealGasStationRunning)
+            {
+                VehicleStatusForRealGasStation(vehicleID, ref vehicleData);
+            }
+
+            if (Loader.isRealCityRunning)
+            {
+                VehicleStatusForRealCity(vehicleID, ref vehicleData);
+            }
+
+            if (Loader.isTrafficCongestionReportRunning)
+            {
+                VehicleStatusForTrafficCongestionReport(vehicleID, ref vehicleData);
+            }
+
             if ((leaderData.m_flags2 & Vehicle.Flags2.Blown) != (Vehicle.Flags2)0)
             {
                 this.SimulationStepBlown(vehicleID, ref vehicleData, ref frameData, leaderID, ref leaderData, lodPhysics);

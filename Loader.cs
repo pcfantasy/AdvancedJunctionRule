@@ -13,6 +13,7 @@ using TrafficManager.Traffic.Data;
 using TrafficManager.UI.SubTools;
 using ColossalFramework.PlatformServices;
 using System.Collections.Generic;
+using AdvancedJunctionRule.Util;
 
 namespace AdvancedJunctionRule
 {
@@ -30,6 +31,10 @@ namespace AdvancedJunctionRule
         public static bool isLoaded = false;
         public static bool is583429740 = false;
         public static bool is1637663252 = false;
+        public static bool isRealCityRunning = false;
+        public static bool isRealGasStationRunning = false;
+        public static bool isTrafficCongestionReportRunning = false;
+        public static bool HarmonyDetourInited = false;
 
         public static RedirectCallsState state1;
         public static RedirectCallsState state2;
@@ -53,6 +58,7 @@ namespace AdvancedJunctionRule
                     DebugLog.LogToFileOnly("OnLevelLoaded");
                     Language.LanguageSwitch(0);
                     SetupRoadGui();
+                    Detour();
                     CheckTMPE();
                     if (mode == LoadMode.NewGame)
                     {
@@ -62,7 +68,6 @@ namespace AdvancedJunctionRule
                 }
             }
         }
-
 
         public void CheckTMPE()
         {
@@ -94,7 +99,7 @@ namespace AdvancedJunctionRule
                 RemoveGui();
             }
 
-            if (Threading.isDetoured)
+            if (AdvancedJunctionRuleThreading.isDetoured)
             {
                 RevertDetour();
             }
@@ -105,6 +110,12 @@ namespace AdvancedJunctionRule
             base.OnReleased();
         }
 
+        public void Detour()
+        {
+            isRealCityRunning = Check3rdPartyModLoaded("RealCity", true);
+            isRealGasStationRunning = Check3rdPartyModLoaded("RealGasStation", true);
+            isTrafficCongestionReportRunning = Check3rdPartyModLoaded("TrafficCongestionReport", true);
+        }
 
         public void RevertDetour()
         {
@@ -123,7 +134,7 @@ namespace AdvancedJunctionRule
                 typeof(PathUnit.Position).MakeByRefType(),
                 typeof(ushort),
                 typeof(float).MakeByRefType()}, null);
-            RedirectionHelper.RevertRedirect(srcMethod1, Threading.state1);
+            RedirectionHelper.RevertRedirect(srcMethod1, AdvancedJunctionRuleThreading.state1);
             var srcMethod2 = typeof(CarAI).GetMethod("SimulationStep", BindingFlags.Instance | BindingFlags.Public, null, new Type[] {
                 typeof(ushort),
                 typeof(Vehicle).MakeByRefType(),
@@ -131,27 +142,23 @@ namespace AdvancedJunctionRule
                 typeof(ushort),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(int)}, null);
-            RedirectionHelper.RevertRedirect(srcMethod2, Threading.state2);
+            RedirectionHelper.RevertRedirect(srcMethod2, AdvancedJunctionRuleThreading.state2);
             var srcMethod3 = typeof(CustomRoadAI).GetMethod("GetTrafficLightState", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, new Type[] { typeof(ushort), typeof(ushort), typeof(byte), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(uint), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType() }, null);
-            RedirectionHelper.RevertRedirect(srcMethod3, Threading.state3);
+            RedirectionHelper.RevertRedirect(srcMethod3, AdvancedJunctionRuleThreading.state3);
             var srcMethod4 = typeof(CustomRoadAI).GetMethod("GetTrafficLightState", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, new Type[] { typeof(ushort), typeof(ushort), typeof(byte), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(uint), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(RoadBaseAI.TrafficLightState).MakeByRefType() }, null);
-            RedirectionHelper.RevertRedirect(srcMethod4, Threading.state4);
+            RedirectionHelper.RevertRedirect(srcMethod4, AdvancedJunctionRuleThreading.state4);
             var srcMethod5 = typeof(LaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
-            RedirectionHelper.RevertRedirect(srcMethod5, Threading.state5);
+            RedirectionHelper.RevertRedirect(srcMethod5, AdvancedJunctionRuleThreading.state5);
 
-            Threading.isDetoured = false;
-            Threading.isFirstTiming = true;
+            AdvancedJunctionRuleThreading.isDetoured = false;
+            AdvancedJunctionRuleThreading.isFirstTiming = true;
             isLoaded = false;
         }
-
-
 
         public static void SetupRoadGui()
         {
             roadWindowGameObject = new GameObject("roadWindowObject");
             guiPanel = (RoadUI)roadWindowGameObject.AddComponent(typeof(RoadUI));
-
-
             roadInfo = UIView.Find<UIPanel>("(Library) RoadWorldInfoPanel");
             if (roadInfo == null)
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdvancedJunctionRule.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ using TrafficManager.State;
 using TrafficManager.TrafficLight;
 using TrafficManager.TrafficLight.Data;
 
-namespace AdvancedJunctionRule
+namespace AdvancedJunctionRule.CustomAI
 {
     public class AdvancedJunctionRuleRoadAI : RoadBaseAI
     {
