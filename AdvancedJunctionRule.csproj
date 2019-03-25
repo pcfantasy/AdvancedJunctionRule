@@ -53,14 +53,17 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TMPE.CitiesGameBridge">
-      <HintPath>..\..\Cities-Skylines-Traffic-Manager-President-Edition2\TLM\TLM\bin\Release\TMPE.CitiesGameBridge.dll</HintPath>
+    <Reference Include="TMPE.CitiesGameBridge, Version=1.0.6991.41414, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TMPE.CitiesGameBridge.dll</HintPath>
     </Reference>
-    <Reference Include="TMPE.GenericGameBridge">
-      <HintPath>..\..\Cities-Skylines-Traffic-Manager-President-Edition2\TLM\TLM\bin\Release\TMPE.GenericGameBridge.dll</HintPath>
+    <Reference Include="TMPE.GenericGameBridge, Version=1.0.6991.41414, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TMPE.GenericGameBridge.dll</HintPath>
     </Reference>
-    <Reference Include="TrafficManager">
-      <HintPath>..\..\Cities-Skylines-Traffic-Manager-President-Edition2\TLM\TLM\bin\Release\TrafficManager.dll</HintPath>
+    <Reference Include="TrafficManager, Version=1.0.6992.15472, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\SteamLibrary\steamapps\workshop\content\255710\1637663252\TrafficManager.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>

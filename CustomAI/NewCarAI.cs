@@ -14,10 +14,10 @@ using TrafficManager.State;
 using TrafficManager.Traffic;
 using UnityEngine;
 using TrafficManager.Traffic.Data;
-using static TrafficManager.Traffic.Data.PrioritySegment;
 using ColossalFramework.Math;
 using TrafficManager.TrafficLight;
 using AdvancedJunctionRule.Util;
+using static TrafficManager.Traffic.Data.PrioritySegment;
 
 namespace AdvancedJunctionRule.CustomAI
 {
@@ -363,6 +363,33 @@ namespace AdvancedJunctionRule.CustomAI
 					//}
 #endif
 
+                    // Turn-on-red: Check if turning in the preferred direction, and if turning while it's red is allowed
+                    if (
+                        Options.turnOnRedEnabled &&
+                        stopCar &&
+                        sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxYieldVelocity * GlobalConfig.Instance.PriorityRules.MaxYieldVelocity &&
+                        !isRecklessDriver
+                    )
+                    {
+                        IJunctionRestrictionsManager junctionRestrictionsManager = Constants.ManagerFactory.JunctionRestrictionsManager;
+                        ITurnOnRedManager turnOnRedMan = Constants.ManagerFactory.TurnOnRedManager;
+                        bool lhd = Constants.ServiceFactory.SimulationService.LeftHandDrive;
+                        int torIndex = turnOnRedMan.GetIndex(prevPos.m_segment, isTargetStartNode);
+                        if (
+                            (turnOnRedMan.TurnOnRedSegments[torIndex].leftSegmentId == position.m_segment &&
+                            junctionRestrictionsManager.IsTurnOnRedAllowed(lhd, prevPos.m_segment, isTargetStartNode)) ||
+                            (turnOnRedMan.TurnOnRedSegments[torIndex].rightSegmentId == position.m_segment &&
+                            junctionRestrictionsManager.IsTurnOnRedAllowed(!lhd, prevPos.m_segment, isTargetStartNode))
+                        )
+                        {
+#if DEBUG
+							if (debug)
+								Log._Debug($"VehicleBehaviorManager.MayChangeSegment({frontVehicleId}): Vehicle may turn on red to target segment {position.m_segment}, lane {position.m_lane}");
+#endif
+                            stopCar = false;
+                        }
+                    }
+
                     // check priority rules at unprotected traffic lights
                     if (!stopCar && Options.prioritySignsEnabled && Options.trafficLightPriorityRules && segLightsMan.IsSegmentLight(prevPos.m_segment, isTargetStartNode))
                     {
@@ -380,7 +407,7 @@ namespace AdvancedJunctionRule.CustomAI
                             // green light but other cars are incoming and they have priority: stop
 #if DEBUG
 							if (debug)
-								Log._Debug($"VehicleBehaviorManager.MayChangeSegment({frontVehicleId}): Green traffic light but detected traffic with higher priority: stop.");
+								Log._Debug($"VehicleBehaviorManager.MayChangeSegment({frontVehicleId}): Green traffic light (or turn on red allowed) but detected traffic with higher priority: stop.");
 #endif
                             stopCar = true;
                         }
@@ -397,62 +424,6 @@ namespace AdvancedJunctionRule.CustomAI
                         {
                             vehicleData.m_flags2 |= Vehicle.Flags2.Yielding;
                             vehicleData.m_waitCounter = 0;
-                        }
-
-                        // Check if turning in the preferred direction, and if turning while it's red is allowed
-                        if (Options.turnOnRed)
-                        {
-                            if (JunctionRestrictionsManager.Instance.IsTurnOnRedAllowed(prevPos.m_segment, isTargetStartNode))
-                            {
-                                // Check if vehicle has stopped
-                                if ((vehicleState.JunctionTransitState == VehicleJunctionTransitState.Stop && sqrVelocity <= TrafficPriorityManager.MAX_SQR_STOP_VELOCITY)
-                                    || isRecklessDriver && sqrVelocity <= TrafficPriorityManager.MAX_YIELD_VELOCITY)
-                                {
-
-                                    ushort uCurrentSegment = prevPos.m_segment;
-                                    ushort uTargetSegment = position.m_segment;
-
-                                    // If you can turn preferred and you're not going straight, continue
-                                    SegmentGeometry currentSegGeo = SegmentGeometry.Get(uCurrentSegment);
-                                    SegmentEndGeometry currentSegEndGeo = currentSegGeo.GetEnd(targetNodeId);
-#if DEBUG
-                                    if (debug)
-                                        Log._Debug($"VehicleBehaviorManager.MayChangeSegment({frontVehicleId}): uCurrentSegment={uCurrentSegment}, hasValidTurnOnRedOutgoingSegment={currentSegGeo.HasValidTurnOnRedOutgoingSegment(currentSegEndGeo)}, isStraightSegment1={currentSegGeo.IsStraightSegment(uTargetSegment, false)}, isStraightSegment2={currentSegGeo.IsStraightSegment(uTargetSegment, true)}");
-#endif
-                                    if (currentSegGeo.HasValidTurnOnRedOutgoingSegment(currentSegEndGeo) && !currentSegGeo.IsStraightSegment(uTargetSegment, false) && !currentSegGeo.IsStraightSegment(uTargetSegment, true))
-                                    {
-
-                                        ushort uTurnSegment = 0;
-
-                                        Constants.ServiceFactory.NetService.ProcessSegment(uCurrentSegment, delegate (ushort sId, ref NetSegment segment)
-                                        {
-                                            if (Constants.ServiceFactory.SimulationService.LeftHandDrive)
-                                            {
-                                                uTurnSegment = segment.GetLeftSegment(targetNodeId);
-                                            }
-                                            else
-                                            {
-                                                uTurnSegment = segment.GetRightSegment(targetNodeId);
-                                            }
-                                            return true;
-                                        });
-
-                                        SegmentGeometry turnSegGeo = SegmentGeometry.Get(uTurnSegment);
-#if DEBUG
-                                        if (debug)
-                                            Log._Debug($"VehicleBehaviorManager.MayChangeSegment({frontVehicleId}): turnOnRed, targetIsTurn={uTargetSegment == uTurnSegment}, oneWayToOneWay={currentSegGeo.IsOneWay() && turnSegGeo?.IsOneWay() == true}");
-#endif
-                                        bool hasPriority = prioMan.HasPriority(frontVehicleId, ref vehicleData, ref prevPos, targetNodeId, isTargetStartNode, ref position, ref targetNode);
-                                        if (hasPriority && (uTargetSegment == uTurnSegment || (currentSegGeo.IsOneWay() && turnSegGeo?.IsOneWay() == true)))
-                                        {
-                                            vehicleState.JunctionTransitState = VehicleJunctionTransitState.Leave;
-                                            maxSpeed = 0f;
-                                            return true;
-                                        }
-
-                                    }
-                                }
-                            }
                         }
 
                         vehicleState.JunctionTransitState = VehicleJunctionTransitState.Stop;
@@ -535,7 +506,7 @@ namespace AdvancedJunctionRule.CustomAI
 #endif
                                         vehicleState.JunctionTransitState = VehicleJunctionTransitState.Stop;
 
-                                        if (sqrVelocity <= TrafficPriorityManager.MAX_SQR_STOP_VELOCITY)
+                                        if (sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxStopVelocity * GlobalConfig.Instance.PriorityRules.MaxStopVelocity)
                                         {
                                             vehicleState.waitTime++;
 
@@ -607,7 +578,7 @@ namespace AdvancedJunctionRule.CustomAI
 #endif
                                         vehicleState.JunctionTransitState = VehicleJunctionTransitState.Stop;
 
-                                        if (sqrVelocity <= TrafficPriorityManager.MAX_SQR_YIELD_VELOCITY || Options.simAccuracy <= 2)
+                                        if (sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxYieldVelocity * GlobalConfig.Instance.PriorityRules.MaxYieldVelocity || Options.simAccuracy <= 2)
                                         {
                                             if (Options.simAccuracy >= 4)
                                             {
@@ -645,7 +616,7 @@ namespace AdvancedJunctionRule.CustomAI
 #endif
 
                                             // vehicle has not yet reached yield speed
-                                            maxSpeed = TrafficPriorityManager.MAX_YIELD_VELOCITY;
+                                            maxSpeed = GlobalConfig.Instance.PriorityRules.MaxYieldVelocity;
                                             return false;
                                         }
                                     }
@@ -706,7 +677,7 @@ namespace AdvancedJunctionRule.CustomAI
                                     return true;
                             }
                         }
-                        else if (sqrVelocity <= TrafficPriorityManager.MAX_SQR_STOP_VELOCITY && (vehicleState.vehicleType & ExtVehicleType.RoadVehicle) != ExtVehicleType.None)
+                        else if (sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxStopVelocity * GlobalConfig.Instance.PriorityRules.MaxStopVelocity && (vehicleState.vehicleType & ExtVehicleType.RoadVehicle) != ExtVehicleType.None)
                         {
                             // vehicle is not moving. reset allowance to leave junction
 #if DEBUG
@@ -983,22 +954,32 @@ namespace AdvancedJunctionRule.CustomAI
 					//}
 #endif
 
-#if TURNONRED
-					// Check if turning in the preferred direction, and if turning while it's red is allowed
-					if (stopCar && sqrVelocity <= TrafficPriorityManager.MAX_SQR_STOP_VELOCITY && JunctionRestrictionsManager.Instance.IsTurnOnRedAllowed(prevPos.m_segment, isTargetStartNode)) {
-						SegmentGeometry currentSegGeo = SegmentGeometry.Get(prevPos.m_segment);
-						SegmentEndGeometry currentSegEndGeo = currentSegGeo.GetEnd(targetNodeId);
-						ArrowDirection targetDir = currentSegEndGeo.GetDirection(position.m_segment);
-						bool lhd = Services.SimulationService.LeftHandDrive;
-						if (lhd && targetDir == ArrowDirection.Left || !lhd && targetDir == ArrowDirection.Right) {
+                    // Turn-on-red: Check if turning in the preferred direction, and if turning while it's red is allowed
+                    if (
+                        Options.turnOnRedEnabled &&
+                        stopCar &&
+                        sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxYieldVelocity * GlobalConfig.Instance.PriorityRules.MaxYieldVelocity &&
+                        !isRecklessDriver
+                    )
+                    {
+                        IJunctionRestrictionsManager junctionRestrictionsManager = Constants.ManagerFactory.JunctionRestrictionsManager;
+                        ITurnOnRedManager turnOnRedMan = Constants.ManagerFactory.TurnOnRedManager;
+                        bool lhd = Constants.ServiceFactory.SimulationService.LeftHandDrive;
+                        int torIndex = turnOnRedMan.GetIndex(prevPos.m_segment, isTargetStartNode);
+                        if (
+                            (turnOnRedMan.TurnOnRedSegments[torIndex].leftSegmentId == position.m_segment &&
+                            junctionRestrictionsManager.IsTurnOnRedAllowed(lhd, prevPos.m_segment, isTargetStartNode)) ||
+                            (turnOnRedMan.TurnOnRedSegments[torIndex].rightSegmentId == position.m_segment &&
+                            junctionRestrictionsManager.IsTurnOnRedAllowed(!lhd, prevPos.m_segment, isTargetStartNode))
+                        )
+                        {
 #if DEBUG
 							if (debug)
 								Log._Debug($"VehicleBehaviorManager.MayChangeSegment({frontVehicleId}): Vehicle may turn on red to target segment {position.m_segment}, lane {position.m_lane}");
 #endif
-							stopCar = false;
-						}
-					}
-#endif
+                            stopCar = false;
+                        }
+                    }
 
                     // check priority rules at unprotected traffic lights
                     if (!stopCar && Options.prioritySignsEnabled && Options.trafficLightPriorityRules && segLightsMan.IsSegmentLight(prevPos.m_segment, isTargetStartNode))
@@ -1116,7 +1097,7 @@ namespace AdvancedJunctionRule.CustomAI
 #endif
                                         vehicleState.JunctionTransitState = VehicleJunctionTransitState.Stop;
 
-                                        if (sqrVelocity <= TrafficPriorityManager.MAX_SQR_STOP_VELOCITY)
+                                        if (sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxStopVelocity * GlobalConfig.Instance.PriorityRules.MaxStopVelocity)
                                         {
                                             vehicleState.waitTime++;
 
@@ -1188,7 +1169,7 @@ namespace AdvancedJunctionRule.CustomAI
 #endif
                                         vehicleState.JunctionTransitState = VehicleJunctionTransitState.Stop;
 
-                                        if (sqrVelocity <= TrafficPriorityManager.MAX_SQR_YIELD_VELOCITY || Options.simAccuracy <= 2)
+                                        if (sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxYieldVelocity * GlobalConfig.Instance.PriorityRules.MaxYieldVelocity || Options.simAccuracy <= 2)
                                         {
                                             if (Options.simAccuracy >= 4)
                                             {
@@ -1226,7 +1207,7 @@ namespace AdvancedJunctionRule.CustomAI
 #endif
 
                                             // vehicle has not yet reached yield speed
-                                            maxSpeed = TrafficPriorityManager.MAX_YIELD_VELOCITY;
+                                            maxSpeed = GlobalConfig.Instance.PriorityRules.MaxYieldVelocity;
                                             return false;
                                         }
                                     }
@@ -1287,7 +1268,7 @@ namespace AdvancedJunctionRule.CustomAI
                                     return true;
                             }
                         }
-                        else if (sqrVelocity <= TrafficPriorityManager.MAX_SQR_STOP_VELOCITY && (vehicleState.vehicleType & ExtVehicleType.RoadVehicle) != ExtVehicleType.None)
+                        else if (sqrVelocity <= GlobalConfig.Instance.PriorityRules.MaxStopVelocity * GlobalConfig.Instance.PriorityRules.MaxStopVelocity && (vehicleState.vehicleType & ExtVehicleType.RoadVehicle) != ExtVehicleType.None)
                         {
                             // vehicle is not moving. reset allowance to leave junction
 #if DEBUG
