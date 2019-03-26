@@ -1601,17 +1601,17 @@ namespace AdvancedJunctionRule.CustomAI
             frameData.m_transition = false;
         }
 
-        public void VehicleStatusForRealGasStation(ushort vehicleID, ref Vehicle vehicleData)
+        public static void VehicleStatusForRealGasStation(ushort vehicleID, ref Vehicle vehicleData)
         {
             DebugLog.LogToFileOnly("Error: should be detoured by RealGasStation");
         }
 
-        public void VehicleStatusForRealCity(ushort vehicleID, ref Vehicle vehicleData)
+        public static void VehicleStatusForRealCity(ushort vehicleID, ref Vehicle vehicleData)
         {
             DebugLog.LogToFileOnly("Error: should be detoured by RealCity");
         }
 
-        public void VehicleStatusForTrafficCongestionReport(ushort vehicleID, ref Vehicle vehicleData)
+        public static void VehicleStatusForTrafficCongestionReport(ushort vehicleID, ref Vehicle vehicleData)
         {
             DebugLog.LogToFileOnly("Error: should be detoured by TrafficCongestionReport");
         }
