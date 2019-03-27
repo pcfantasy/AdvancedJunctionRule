@@ -1,6 +1,6 @@
 ﻿CAN_LEFT_WAITING	允许车辆左转待行
 CAN_UTURN_ON_RED	允许车辆红灯调头
 LEFT_TIPS	左转功能规则提示
-NO_TRAFFIC_LIGHTS 这段路没有红绿灯
+NO_TRAFFIC_LIGHTS	这段路没有红绿灯
 NEED_TMPE	需要TMPE定制红绿灯来完成左转待行设置
-UTURN_TIPS 掉头规则提示
+UTURN_TIPS	掉头规则提示

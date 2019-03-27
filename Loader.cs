@@ -14,19 +14,16 @@ using TrafficManager.UI.SubTools;
 using ColossalFramework.PlatformServices;
 using System.Collections.Generic;
 using AdvancedJunctionRule.Util;
+using AdvancedJunctionRule.CustomAI;
 
 namespace AdvancedJunctionRule
 {
     public class Loader : LoadingExtensionBase
     {
         public static LoadMode CurrentLoadMode;
-
         public static UIPanel roadInfo;
-
         public static GameObject roadWindowGameObject;
-
         public static RoadUI guiPanel;
-
         public static bool isGuiRunning = false;
         public static bool isLoaded = false;
         public static bool is583429740 = false;
@@ -34,17 +31,28 @@ namespace AdvancedJunctionRule
         public static bool isRealCityRunning = false;
         public static bool isRealGasStationRunning = false;
         public static bool isTrafficCongestionReportRunning = false;
-        public static bool HarmonyDetourInited = false;
 
-        public static RedirectCallsState state1;
-        public static RedirectCallsState state2;
-        public static RedirectCallsState state3;
-        public static RedirectCallsState state4;
+        public class Detour
+        {
+            public MethodInfo OriginalMethod;
+            public MethodInfo CustomMethod;
+            public RedirectCallsState Redirect;
+
+            public Detour(MethodInfo originalMethod, MethodInfo customMethod)
+            {
+                this.OriginalMethod = originalMethod;
+                this.CustomMethod = customMethod;
+                this.Redirect = RedirectionHelper.RedirectCalls(originalMethod, customMethod);
+            }
+        }
+
+        public static List<Detour> Detours { get; set; }
+        public static bool DetourInited = false;
 
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-
+            Detours = new List<Detour>();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -57,7 +65,7 @@ namespace AdvancedJunctionRule
                 {
                     DebugLog.LogToFileOnly("OnLevelLoaded");
                     SetupRoadGui();
-                    Detour();
+                    InitDetour();
                     CheckTMPE();
                     if (mode == LoadMode.NewGame)
                     {
@@ -101,6 +109,7 @@ namespace AdvancedJunctionRule
             if (AdvancedJunctionRuleThreading.isDetoured)
             {
                 RevertDetour();
+                AdvancedJunctionRuleThreading.isFirstTime = true;
             }
         }
 
@@ -109,49 +118,68 @@ namespace AdvancedJunctionRule
             base.OnReleased();
         }
 
-        public void Detour()
+        public void InitDetour()
         {
             isRealCityRunning = Check3rdPartyModLoaded("RealCity", true);
             isRealGasStationRunning = Check3rdPartyModLoaded("RealGasStation", true);
             isTrafficCongestionReportRunning = Check3rdPartyModLoaded("TrafficCongestionReport", true);
-        }
 
-        public void RevertDetour()
-        {
-            var srcMethod1 = typeof(VehicleBehaviorManager).GetMethod("MayChangeSegment", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] {                 typeof(ushort),
-                typeof(VehicleState).MakeByRefType(),
-                typeof(Vehicle).MakeByRefType(),
-                typeof(float),
-                typeof(PathUnit.Position).MakeByRefType(),
-                typeof(NetSegment).MakeByRefType(),
-                typeof(ushort),
-                typeof(uint),
-                typeof(PathUnit.Position).MakeByRefType(),
-                typeof(ushort),
-                typeof(NetNode).MakeByRefType(),
-                typeof(uint),
-                typeof(PathUnit.Position).MakeByRefType(),
-                typeof(ushort),
-                typeof(float).MakeByRefType()}, null);
-            RedirectionHelper.RevertRedirect(srcMethod1, AdvancedJunctionRuleThreading.state1);
-            var srcMethod2 = typeof(CarAI).GetMethod("SimulationStep", BindingFlags.Instance | BindingFlags.Public, null, new Type[] {
+            if (!DetourInited)
+            {
+                DebugLog.LogToFileOnly("Init detours");
+                bool detourFailed = false;
+
+                //1
+                DebugLog.LogToFileOnly("Detour CargoTruckAI::SetTarget calls");
+                try
+                {
+                    Detours.Add(new Detour(typeof(CarAI).GetMethod("SimulationStep", BindingFlags.Instance | BindingFlags.Public, null, new Type[] {
                 typeof(ushort),
                 typeof(Vehicle).MakeByRefType(),
                 typeof(Vehicle.Frame).MakeByRefType(),
                 typeof(ushort),
                 typeof(Vehicle).MakeByRefType(),
-                typeof(int)}, null);
-            RedirectionHelper.RevertRedirect(srcMethod2, AdvancedJunctionRuleThreading.state2);
-            var srcMethod3 = typeof(CustomRoadAI).GetMethod("GetTrafficLightState", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, new Type[] { typeof(ushort), typeof(ushort), typeof(byte), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(uint), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType() }, null);
-            RedirectionHelper.RevertRedirect(srcMethod3, AdvancedJunctionRuleThreading.state3);
-            var srcMethod4 = typeof(CustomRoadAI).GetMethod("GetTrafficLightState", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, new Type[] { typeof(ushort), typeof(ushort), typeof(byte), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(uint), typeof(RoadBaseAI.TrafficLightState).MakeByRefType(), typeof(RoadBaseAI.TrafficLightState).MakeByRefType() }, null);
-            RedirectionHelper.RevertRedirect(srcMethod4, AdvancedJunctionRuleThreading.state4);
-            var srcMethod5 = typeof(LaneConnectorTool).GetMethod("CheckSegmentsTurningAngle", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool), typeof(ushort), typeof(NetSegment).MakeByRefType(), typeof(bool) }, null);
-            RedirectionHelper.RevertRedirect(srcMethod5, AdvancedJunctionRuleThreading.state5);
+                typeof(int)}, null),
+                typeof(NewCarAI).GetMethod("CustomSimulationStep", BindingFlags.Instance | BindingFlags.Public, null, new Type[]{
+                typeof(ushort),
+                typeof(Vehicle).MakeByRefType(),
+                typeof(Vehicle.Frame).MakeByRefType(),
+                typeof(ushort),
+                typeof(Vehicle).MakeByRefType(),
+                typeof(int)}, null)));
+                }
+                catch (Exception)
+                {
+                    DebugLog.LogToFileOnly("Could not detour CargoTruckAI::SetTarget");
+                    detourFailed = true;
+                }
 
-            AdvancedJunctionRuleThreading.isDetoured = false;
-            AdvancedJunctionRuleThreading.isFirstTiming = true;
-            isLoaded = false;
+                if (detourFailed)
+                {
+                    DebugLog.LogToFileOnly("Detours failed");
+                }
+                else
+                {
+                    DebugLog.LogToFileOnly("Detours successful");
+                }
+                DetourInited = true;
+            }
+        }
+
+        public void RevertDetour()
+        {
+            if (DetourInited)
+            {
+                DebugLog.LogToFileOnly("Revert detours");
+                Detours.Reverse();
+                foreach (Detour d in Detours)
+                {
+                    RedirectionHelper.RevertRedirect(d.OriginalMethod, d.Redirect);
+                }
+                DetourInited = false;
+                Detours.Clear();
+                DebugLog.LogToFileOnly("Reverting detours finished.");
+            }
         }
 
         public static void SetupRoadGui()

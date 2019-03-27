@@ -1,6 +1,6 @@
 ﻿CAN_LEFT_WAITING	Vehicle can enter left waiting area
 CAN_UTURN_ON_RED	Vehicle can do U-turn with red light
 LEFT_TIPS	Left Turn Rule Tips
-NO_TRAFFIC_LIGHTS No traffic light in this segment
+NO_TRAFFIC_LIGHTS	No traffic light in this segment
 NEED_TMPE	Need TMPE traffic light for left waiting rule
-UTURN_TIPS U Turn Rule Tips
+UTURN_TIPS	U Turn Rule Tips
