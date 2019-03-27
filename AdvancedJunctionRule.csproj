@@ -33,9 +33,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -90,11 +87,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\bin\Release\AdvancedJunctionRule.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\AdvancedJunctionRule.dll"
-copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\bin\Release\0Harmony.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\0Harmony.dll"
+    <PostBuildEvent>copy "D:\Mod\AdvancedJunctionRule\bin\Release\AdvancedJunctionRule.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\AdvancedJunctionRule.dll"
 rd /q /s "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"
 mkdir "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"
-copy "C:\Users\Administrator\Desktop\Other Mod\AdvancedJunctionRule\AdvancedJunctionRule\Locales\*.txt" "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"</PostBuildEvent>
+copy "D:\Mod\AdvancedJunctionRule\Locales\*.txt" "F:\SteamLibrary\steamapps\workshop\content\255710\1647686914\Locales"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
