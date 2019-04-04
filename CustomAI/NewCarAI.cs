@@ -1603,17 +1603,32 @@ namespace AdvancedJunctionRule.CustomAI
 
         public static void VehicleStatusForRealGasStation(ushort vehicleID, ref Vehicle vehicleData)
         {
-            DebugLog.LogToFileOnly("Error: should be detoured by RealGasStation");
+            int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFFF);
+
+            if (num26 == 4095)
+            {
+                DebugLog.LogToFileOnly("Error: should be detoured by RealGasStation");
+            }
         }
 
         public static void VehicleStatusForRealCity(ushort vehicleID, ref Vehicle vehicleData)
         {
-            DebugLog.LogToFileOnly("Error: should be detoured by RealCity");
+            int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFFF);
+
+            if (num26 == 4095)
+            {
+                DebugLog.LogToFileOnly("Error: should be detoured by RealCity");
+            }
         }
 
         public static void VehicleStatusForTrafficCongestionReport(ushort vehicleID, ref Vehicle vehicleData)
         {
-            DebugLog.LogToFileOnly("Error: should be detoured by TrafficCongestionReport");
+            int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFFF);
+
+            if (num26 == 4095)
+            {
+                DebugLog.LogToFileOnly("Error: should be detoured by TrafficCongestionReport");
+            }
         }
 
         public void CustomSimulationStep(ushort vehicleID, ref Vehicle vehicleData, ref Vehicle.Frame frameData, ushort leaderID, ref Vehicle leaderData, int lodPhysics)
