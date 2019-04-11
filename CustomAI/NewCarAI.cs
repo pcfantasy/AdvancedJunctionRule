@@ -27,12 +27,34 @@ namespace AdvancedJunctionRule.CustomAI
         {
             if (!Options.timedLightsEnabled || !TrafficLightSimulationManager.Instance.TrafficLightSimulations[(int)nodeId].IsSimulationRunning())
             {
+                MainDataStore.additionWaitingTime[vehicleID] = 0;
+                MainDataStore.isLeftWaiting[vehicleID] = false;
+                MainDataStore.crossStopLine[vehicleID] = false;
+                MainDataStore.nodeId[vehicleID] = 0;
+                MainDataStore.fromSegmentId[vehicleID] = 0;
+                MainDataStore.fromLaneIndex[vehicleID] = 0;
+                MainDataStore.toSegmentId[vehicleID] = 0;
+                MainDataStore.laneID[vehicleID] = 0;
+                MainDataStore.offset[vehicleID] = 0;
+                MainDataStore.nextLaneId[vehicleID] = 0;
+                MainDataStore.nextSegOffset[vehicleID] = 0;
             }
             else
             {
                 SegmentGeometry segmentGeometry = SegmentGeometry.Get(fromSegmentId, false);
                 if (segmentGeometry == null)
                 {
+                    MainDataStore.additionWaitingTime[vehicleID] = 0;
+                    MainDataStore.isLeftWaiting[vehicleID] = false;
+                    MainDataStore.crossStopLine[vehicleID] = false;
+                    MainDataStore.nodeId[vehicleID] = 0;
+                    MainDataStore.fromSegmentId[vehicleID] = 0;
+                    MainDataStore.fromLaneIndex[vehicleID] = 0;
+                    MainDataStore.toSegmentId[vehicleID] = 0;
+                    MainDataStore.laneID[vehicleID] = 0;
+                    MainDataStore.offset[vehicleID] = 0;
+                    MainDataStore.nextLaneId[vehicleID] = 0;
+                    MainDataStore.nextSegOffset[vehicleID] = 0;
                 }
                 else
                 {
@@ -1318,7 +1340,17 @@ namespace AdvancedJunctionRule.CustomAI
                 SegmentGeometry segmentGeometry = SegmentGeometry.Get(MainDataStore.fromSegmentId[vehicleID], false);
                 if (segmentGeometry == null)
                 {
-
+                    MainDataStore.isLeftWaiting[vehicleID] = false;
+                    MainDataStore.crossStopLine[vehicleID] = false;
+                    MainDataStore.nodeId[vehicleID] = 0;
+                    MainDataStore.fromSegmentId[vehicleID] = 0;
+                    MainDataStore.fromLaneIndex[vehicleID] = 0;
+                    MainDataStore.toSegmentId[vehicleID] = 0;
+                    MainDataStore.laneID[vehicleID] = 0;
+                    MainDataStore.offset[vehicleID] = 0;
+                    MainDataStore.nextLaneId[vehicleID] = 0;
+                    MainDataStore.nextSegOffset[vehicleID] = 0;
+                    MainDataStore.additionWaitingTime[vehicleID] = 0;
                 }
                 else
                 {
@@ -1389,7 +1421,17 @@ namespace AdvancedJunctionRule.CustomAI
                 SegmentGeometry segmentGeometry = SegmentGeometry.Get(MainDataStore.fromSegmentId[vehicleID], false);
                 if (segmentGeometry == null)
                 {
-
+                    MainDataStore.additionWaitingTime[vehicleID] = 0;
+                    MainDataStore.isLeftWaiting[vehicleID] = false;
+                    MainDataStore.crossStopLine[vehicleID] = false;
+                    MainDataStore.nodeId[vehicleID] = 0;
+                    MainDataStore.fromSegmentId[vehicleID] = 0;
+                    MainDataStore.fromLaneIndex[vehicleID] = 0;
+                    MainDataStore.toSegmentId[vehicleID] = 0;
+                    MainDataStore.laneID[vehicleID] = 0;
+                    MainDataStore.offset[vehicleID] = 0;
+                    MainDataStore.nextLaneId[vehicleID] = 0;
+                    MainDataStore.nextSegOffset[vehicleID] = 0;
                 }
                 else
                 {
