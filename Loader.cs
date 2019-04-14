@@ -28,7 +28,6 @@ namespace AdvancedJunctionRule
         public static bool isLoaded = false;
         public static bool is583429740 = false;
         public static bool is1637663252 = false;
-        public static bool isRealCityRunning = false;
         public static bool isRealGasStationRunning = false;
         public static bool isTrafficCongestionReportRunning = false;
 
@@ -120,7 +119,6 @@ namespace AdvancedJunctionRule
 
         public void InitDetour()
         {
-            isRealCityRunning = Check3rdPartyModLoaded("RealCity", true);
             isRealGasStationRunning = Check3rdPartyModLoaded("RealGasStation", true);
             isTrafficCongestionReportRunning = Check3rdPartyModLoaded("TrafficCongestionReport", true);
 

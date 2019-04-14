@@ -1653,16 +1653,6 @@ namespace AdvancedJunctionRule.CustomAI
             }
         }
 
-        public static void VehicleStatusForRealCity(ushort vehicleID, ref Vehicle vehicleData)
-        {
-            int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFFF);
-
-            if (num26 == 4095)
-            {
-                DebugLog.LogToFileOnly("Error: should be detoured by RealCity");
-            }
-        }
-
         public static void VehicleStatusForTrafficCongestionReport(ushort vehicleID, ref Vehicle vehicleData)
         {
             int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFFF);
@@ -1678,11 +1668,6 @@ namespace AdvancedJunctionRule.CustomAI
             if (Loader.isRealGasStationRunning)
             {
                 VehicleStatusForRealGasStation(vehicleID, ref vehicleData);
-            }
-
-            if (Loader.isRealCityRunning)
-            {
-                VehicleStatusForRealCity(vehicleID, ref vehicleData);
             }
 
             if (Loader.isTrafficCongestionReportRunning)

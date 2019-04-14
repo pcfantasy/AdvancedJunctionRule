@@ -34,30 +34,10 @@ namespace AdvancedJunctionRule
             {
                 CheckDetour();
                 int num26 = (int)(Singleton<SimulationManager>.instance.m_currentFrameIndex & 0xFF);
-                int num27 = num26 * 144;
-                int num28 = (num26 + 1) * 144 - 1;
 
                 if (num26 == 255)
                 {
                     RoadUI.refeshOnce = true;
-                }
-                //Show road name for UI
-                for (int num30 = num27; num30 <= num28; num30++)
-                {
-                    if (Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.Created) && Singleton<NetManager>.instance.m_segments.m_buffer[num30].Info.m_vehicleTypes.IsFlagSet(VehicleInfo.VehicleType.Car))
-                    {
-                        var instance = Singleton<NetManager>.instance;
-                        var startNode = instance.m_segments.m_buffer[num30].m_startNode;
-                        var endNode = instance.m_segments.m_buffer[num30].m_endNode;
-                        if (instance.m_nodes.m_buffer[startNode].m_flags.IsFlagSet(NetNode.Flags.Junction) || instance.m_nodes.m_buffer[endNode].m_flags.IsFlagSet(NetNode.Flags.Junction) || (Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.x) > 8000 || Math.Abs(Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_middlePosition.z) > 8000))
-                        {
-                            if (!Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags.IsFlagSet(NetSegment.Flags.NameVisible2))
-                            {
-                                Singleton<NetManager>.instance.m_segments.m_buffer[num30].m_flags |= NetSegment.Flags.NameVisible2;
-                                Singleton<NetManager>.instance.UpdateSegmentRenderer((ushort)num30, false);
-                            }
-                        }
-                    }
                 }
             }
         }
