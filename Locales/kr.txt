@@ -1,0 +1,6 @@
+CAN_LEFT_WAITING	좌회전 대기구간에 차량 진입 가능
+CAN_UTURN_ON_RED	빨간 신호등에 유턴 가능
+LEFT_TIPS	좌회전 규칙 도움말
+NO_TRAFFIC_LIGHTS	이 교차로에는 신호등이 없습니다
+NEED_TMPE	TMPE 신호등 시간표로 직선을 먼저 초록불, 그 후 좌회전이 초록불이 되도록 하십시오
+UTURN_TIPS	유턴 규칙 도움말
