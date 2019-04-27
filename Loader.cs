@@ -192,7 +192,8 @@ namespace AdvancedJunctionRule
             guiPanel.transform.parent = roadInfo.transform;
             guiPanel.size = new Vector3(roadInfo.size.x, roadInfo.size.y);
             guiPanel.baseBuildingWindow = roadInfo.gameObject.transform.GetComponentInChildren<RoadWorldInfoPanel>();
-            guiPanel.position = new Vector3(roadInfo.size.x, roadInfo.size.y);
+            //guiPanel.position = new Vector3(roadInfo.size.x, roadInfo.size.y);
+            guiPanel.position = new Vector3(0, 12);
             roadInfo.eventVisibilityChanged += roadInfo_eventVisibilityChanged;
             Loader.isGuiRunning = true;
         }
@@ -222,7 +223,7 @@ namespace AdvancedJunctionRule
                 Loader.guiPanel.transform.parent = Loader.roadInfo.transform;
                 Loader.guiPanel.size = new Vector3(Loader.roadInfo.size.x, Loader.roadInfo.size.y);
                 Loader.guiPanel.baseBuildingWindow = Loader.roadInfo.gameObject.transform.GetComponentInChildren<RoadWorldInfoPanel>();
-                Loader.guiPanel.position = new Vector3(Loader.roadInfo.size.x, Loader.roadInfo.size.y);
+                Loader.guiPanel.position = new Vector3(0, 12);
                 guiPanel.Show();
             }
             else
